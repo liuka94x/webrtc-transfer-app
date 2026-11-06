@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trasferimento file P2P · WebRTC</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Trasferimento file P2P</h1>
+  <p>I file viaggiano direttamente browser-to-browser su WebRTC DataChannel (cifrato DTLS): nessun file passa da un server.</p>
+</header>
+
+<main>
+  <section class="card">
+    <div class="tabs">
+      <button id="tabManual" class="tab active" type="button">Segnale manuale (copia-incolla)</button>
+      <button id="tabServer" class="tab" type="button">Stanza online (server di segnalazione)</button>
+    </div>
+
+    <div id="panelManual">
+      <div class="step">
+        <h2>1 · Chi invia: genera il codice invito</h2>
+        <button id="btnOffer" type="button">Genera codice invito</button>
+        <div class="codeRow">
+          <textarea id="offerCode" readonly rows="4" placeholder="Il codice invito apparirà qui..."></textarea>
+          <button class="copy" type="button" data-target="offerCode">Copia</button>
+        </div>
+      </div>
+
+      <div class="step">
+        <h2>2 · Chi riceve: incolla il codice e genera la risposta</h2>
+        <textarea id="offerInput" rows="4" placeholder="Incolla qui il codice invito..."></textarea>
+        <button id="btnAnswer" type="button">Genera risposta</button>
+        <div class="codeRow">
+          <textarea id="answerCode" readonly rows="4" placeholder="La risposta apparirà qui..."></textarea>
+          <button class="copy" type="button" data-target="answerCode">Copia</button>
+        </div>
+      </div>
+
+      <div class="step">
+        <h2>3 · Chi invia: incolla la risposta per collegarsi</h2>
+        <textarea id="answerInput" rows="4" placeholder="Incolla qui la risposta..."></textarea>
+        <button id="btnConnect" type="button">Collega</button>
+      </div>
+    </div>
+
+    <div id="panelServer" hidden>
+      <p class="hint">La stanza online usa la segnalazione WebSocket dell'app stessa (<code>/api/ws</code>): funziona sia dall'URL deployato sia in locale con <code>mistral dev</code>. La modalità manuale non richiede alcun server.</p>
+      <div class="step">
+        <h2>Crea una stanza (chi invia)</h2>
+        <button id="btnCreateRoom" type="button">Crea stanza</button>
+        <p id="roomInfo" hidden>Codice stanza: <strong id="roomCode"></strong> — condividilo con chi riceve.</p>
+      </div>
+      <div class="step">
+        <h2>Unisciti a una stanza (chi riceve)</h2>
+        <div class="row">
+          <input id="roomJoin" type="text" placeholder="Codice stanza" maxlength="8" autocomplete="off">
+          <button id="btnJoinRoom" type="button">Unisciti</button>
+        </div>
+      </div>
+    </div>
+
+    <p id="connStatus" class="status">Stato: non connesso</p>
+    <button id="btnClose" type="button" class="danger" hidden>Chiudi connessione</button>
+  </section>
+
+  <section class="card">
+    <h2>File</h2>
+    <div id="dropzone" hidden>
+      Trascina qui i file oppure
+      <label class="link">seleziona dal dispositivo<input id="fileInput" type="file" multiple hidden></label>
+    </div>
+    <p id="stats" class="stats"></p>
+    <ul id="fileList"></ul>
+  </section>
+
+  <section class="card">
+    <h2>Registro</h2>
+    <div id="log"></div>
+  </section>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
